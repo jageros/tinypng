@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cimage/config"
 	"fmt"
 	"github.com/gwpp/tinify-go/tinify"
 	"io/ioutil"
@@ -11,8 +12,9 @@ import (
 )
 
 func main() {
-	Tinify.SetKey("pJ3FQdt95CnPT0xc5TDkj52m45Kzn8Tt")
-	compDir("./imgs/", "./cpimgs/")
+	cfg := config.GetConfig()
+	Tinify.SetKey(cfg.TinyPng.APIKey)
+	compDir(cfg.TinyPng.InPutDir, cfg.TinyPng.OutputDir)
 }
 
 func compDir(inDir, outDir string) {
