@@ -1,0 +1,14 @@
+[tinyPng]
+apiKey = "pJ3FQdt95CnPT0xc5TDkj52m45Kzn8Tt"
+inputDir = "./imgs/"
+outputDir = "./cpimgs/"
+# same to golang time format, default not rename
+renameFormat = "20060102150405"
+
+[gitee]
+token = "adf7d13db9231626f5268292bc645c3f"
+owner = "jayos"
+repo = "images"
+path = "img/"
+branch = "master"
+
