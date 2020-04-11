@@ -2,22 +2,31 @@ package main
 
 import (
 	"cimage/config"
+	"cimage/gitee"
+	"cimage/tinypng"
+	"flag"
 	"fmt"
-	"github.com/gwpp/tinify-go/tinify"
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
 
 func main() {
+	needDel := false
+	flag.BoolVar(&needDel, "d", false, "-d: 表示删除源文件")
+	flag.Parse()
+	if needDel {
+		log.Printf("Delete src file end of compress!")
+	}
 	cfg := config.GetConfig()
-	Tinify.SetKey(cfg.TinyPng.APIKey)
-	compDir(cfg.TinyPng.InPutDir, cfg.TinyPng.OutputDir)
+	tinypng.SetKey(cfg.TinyPng.APIKey)
+	compDir(cfg.TinyPng.InPutDir, cfg.TinyPng.OutputDir, cfg.TinyPng.RenameFormat, needDel)
 }
 
-func compDir(inDir, outDir string) {
+func compDir(inDir, outDir, outputFilenameFormat string, needDel bool) {
 	files, err := ioutil.ReadDir(inDir)
 	if err != nil {
 		log.Panicf("ReadDir error: %v", err)
@@ -31,33 +40,51 @@ func compDir(inDir, outDir string) {
 	if !strings.HasSuffix(outDir, "/") {
 		outDir = outDir + "/"
 	}
-	for _, f := range files {
-		fileName := f.Name()
-		if strings.HasSuffix(fileName, ".jpg") || strings.HasSuffix(fileName, ".jpeg") || strings.HasSuffix(fileName, ".png") {
-			compImage(inDir, outDir, fileName)
+	for i, f := range files {
+		inputFilename := f.Name()
+		var fileType string
+		switch {
+		case strings.HasSuffix(inputFilename, ".jpg"):
+			fileType = ".jpg"
+		case strings.HasSuffix(inputFilename, ".jpeg"):
+			fileType = ".jpeg"
+		case strings.HasSuffix(inputFilename, ".png"):
+			fileType = ".png"
+		default:
+			continue
 		}
+		outputFilename := time.Now().Format(outputFilenameFormat) + strconv.Itoa(i) + fileType
+		compImage(inDir, outDir, inputFilename, outputFilename, needDel)
+
 	}
 }
 
-func compImage(inPath, outPath, fileName string) {
+func compImage(inPath, outPath, inputFilename, outputFilename string, needDel bool) {
 	start := time.Now()
-	iPath := fmt.Sprintf("%s%s", inPath, fileName)
+	iPath := fmt.Sprintf("%s%s", inPath, inputFilename)
 	log.Printf("Start Compress: %s ...", iPath)
-	source, err := Tinify.FromFile(iPath)
+	source, err := tinypng.FromFile(iPath)
 	if err != nil {
 		log.Print(err)
 		return
 	}
-	oPath := fmt.Sprintf("%s%s", outPath, fileName)
-	err = source.ToFile(oPath)
+	//oPath := fmt.Sprintf("%s%s", outPath, outputFilename)
+	content, err := source.ToBase64Str()
 	if err != nil {
 		log.Print(err)
 		return
 	}
-	err = os.Remove(iPath)
-	if err != nil {
-		log.Printf("Delete file err: %v", err)
+	imgUrl := gitee.PushToGitee(content, outputFilename)
+	if needDel {
+		err = os.Remove(iPath)
+		if err != nil {
+			log.Printf("Delete file err: %v", err)
+		}
 	}
 	takeTime := time.Now().Sub(start).Seconds()
-	log.Printf("Compress successful: %s (takes %fs)", oPath, takeTime)
+	log.Printf("Compress successful: url: %s (takes %fs)", imgUrl, takeTime)
+}
+
+func pushToGitee(content string) {
+
 }

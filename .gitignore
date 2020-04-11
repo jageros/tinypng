@@ -1,3 +1,7 @@
 cpimgs
 imgs
+*.jpg
+*.jpeg
+*.png
 vendor
+main
