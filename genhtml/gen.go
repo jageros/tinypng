@@ -10,8 +10,7 @@ import (
 )
 
 var (
-	head = `
-<!DOCTYPE html>
+	head = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -28,7 +27,7 @@ var (
 <style>
     img {
         width: 300px;
-        height: auto;
+        height: 180px;
     }
 
     div {
@@ -60,8 +59,8 @@ func genByTemple(url string) string {
 
 func genAllContent(urls []string) string {
 	result := head
-	for _, url := range urls {
-		result += genByTemple(url)
+	for i := len(urls) - 1; i >= 0; i-- {
+		result += genByTemple(urls[i])
 	}
 	result += end
 	return result
@@ -107,6 +106,8 @@ func WriteUrlsToFile(urls []string) {
 		if err != nil || err == io.EOF {
 			break
 		}
+		strs := strings.Split(line, "\n")
+		line = strs[0]
 		if line != "" {
 			lines = append(lines, line)
 		}

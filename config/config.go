@@ -21,6 +21,7 @@ type gitee struct {
 	Owner      string `toml:"owner"`
 	Repo       string `toml:"repo"`
 	PathFormat string `toml:"pathFormat"`
+	FixedPath  string `toml:"fixedPath"`
 	Branch     string `toml:"branch"`
 }
 

@@ -17,14 +17,16 @@ import (
 
 func main() {
 	needDel := false
+	var inputDir string
+	cfg := config.GetConfig()
 	flag.BoolVar(&needDel, "d", false, "-d: 表示删除源文件")
+	flag.StringVar(&inputDir, "dir", cfg.TinyPng.InPutDir, "-dir ./imgs  表示源图片路径")
 	flag.Parse()
 	if needDel {
 		log.Printf("Delete src file end of compress!")
 	}
-	cfg := config.GetConfig()
 	tinypng.SetKey(cfg.TinyPng.APIKey)
-	compDir(cfg.TinyPng.InPutDir, cfg.TinyPng.OutputDir, cfg.TinyPng.RenameFormat, needDel)
+	compDir(inputDir, cfg.TinyPng.OutputDir, cfg.TinyPng.RenameFormat, needDel)
 }
 
 func compDir(inDir, outDir, outputFilenameFormat string, needDel bool) {

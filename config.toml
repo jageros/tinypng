@@ -7,7 +7,8 @@ renameFormat = "20060102150405"   # same to golang time format, default not rena
 [gitee]
 token = "adf7d13db9231626f5268292bc645c3f"  # 不设置此项默认不推送到码云
 owner = "jayos"
-repo = "images"
-pathFormat = "20060102/"
+repo = "imgs"
+pathFormat = "20060102"
+#fixedPath = "img" #固定路径，设置此项后 pathFormat项无效
 branch = "master"
 

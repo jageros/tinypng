@@ -23,6 +23,9 @@ func PushToGitee(fileContent, filename string) string {
 		return "push to gitee must set the gitee token!"
 	}
 	path := time.Now().Format(cfg.PathFormat)
+	if cfg.FixedPath != "" {
+		path = cfg.FixedPath
+	}
 	url := fmt.Sprintf("%s/%s/%s/contents/%s/%s", baseUrl, cfg.Owner, cfg.Repo, path, filename)
 	body := map[string]interface{}{
 		"access_token": cfg.Token,

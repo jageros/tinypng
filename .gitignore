@@ -7,3 +7,4 @@ vendor
 main
 img_urls.txt
 index.html
+.DS_Store
