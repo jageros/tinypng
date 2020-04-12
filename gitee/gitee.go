@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 )
 
 var (
@@ -18,7 +19,11 @@ var (
 
 func PushToGitee(fileContent, filename string) string {
 	cfg := config.GetConfig().Gitee
-	url := fmt.Sprintf("%s/%s/%s/contents/%s/%s", baseUrl, cfg.Owner, cfg.Repo, cfg.Path, filename)
+	if cfg.Token == "" {
+		return "push to gitee must set the gitee token!"
+	}
+	path := time.Now().Format(cfg.PathFormat)
+	url := fmt.Sprintf("%s/%s/%s/contents/%s/%s", baseUrl, cfg.Owner, cfg.Repo, path, filename)
 	body := map[string]interface{}{
 		"access_token": cfg.Token,
 		"content":      fileContent,
@@ -41,6 +46,6 @@ func PushToGitee(fileContent, filename string) string {
 	} else {
 		log.Printf("push %s to gitee faild StatusCode=%d", filename, resp.StatusCode)
 	}
-	imgUrl := fmt.Sprintf("https://gitee.com/%s/%s/raw/master/%s/%s", cfg.Owner, cfg.Repo, cfg.Path, filename)
+	imgUrl := fmt.Sprintf("https://gitee.com/%s/%s/raw/master/%s/%s", cfg.Owner, cfg.Repo, path, filename)
 	return imgUrl
 }

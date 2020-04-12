@@ -5,3 +5,5 @@ imgs
 *.png
 vendor
 main
+img_urls.txt
+index.html

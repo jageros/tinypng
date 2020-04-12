@@ -2,6 +2,7 @@ package main
 
 import (
 	"cimage/config"
+	"cimage/genhtml"
 	"cimage/gitee"
 	"cimage/tinypng"
 	"flag"
@@ -37,9 +38,10 @@ func compDir(inDir, outDir, outputFilenameFormat string, needDel bool) {
 	if !strings.HasSuffix(inDir, "/") {
 		inDir = inDir + "/"
 	}
-	if !strings.HasSuffix(outDir, "/") {
+	if outDir != "" && !strings.HasSuffix(outDir, "/") {
 		outDir = outDir + "/"
 	}
+	var imgUrls []string
 	for i, f := range files {
 		inputFilename := f.Name()
 		var fileType string
@@ -54,27 +56,36 @@ func compDir(inDir, outDir, outputFilenameFormat string, needDel bool) {
 			continue
 		}
 		outputFilename := time.Now().Format(outputFilenameFormat) + strconv.Itoa(i) + fileType
-		compImage(inDir, outDir, inputFilename, outputFilename, needDel)
-
+		imUrl := compImage(inDir, outDir, inputFilename, outputFilename, needDel)
+		if imUrl != "" {
+			imgUrls = append(imgUrls, imUrl)
+		}
 	}
+	genhtml.WriteUrlsToFile(imgUrls)
 }
 
-func compImage(inPath, outPath, inputFilename, outputFilename string, needDel bool) {
+func compImage(inPath, outPath, inputFilename, outputFilename string, needDel bool) string {
 	start := time.Now()
 	iPath := fmt.Sprintf("%s%s", inPath, inputFilename)
 	log.Printf("Start Compress: %s ...", iPath)
 	source, err := tinypng.FromFile(iPath)
 	if err != nil {
 		log.Print(err)
-		return
+		return ""
 	}
-	//oPath := fmt.Sprintf("%s%s", outPath, outputFilename)
 	content, err := source.ToBase64Str()
 	if err != nil {
 		log.Print(err)
-		return
+		return ""
 	}
 	imgUrl := gitee.PushToGitee(content, outputFilename)
+	if outPath != "" {
+		oPath := fmt.Sprintf("%s%s", outPath, outputFilename)
+		err = source.ToFile(oPath)
+		if err != nil {
+			log.Printf("source to file err: %v", err)
+		}
+	}
 	if needDel {
 		err = os.Remove(iPath)
 		if err != nil {
@@ -83,8 +94,5 @@ func compImage(inPath, outPath, inputFilename, outputFilename string, needDel bo
 	}
 	takeTime := time.Now().Sub(start).Seconds()
 	log.Printf("Compress successful: url: %s (takes %fs)", imgUrl, takeTime)
-}
-
-func pushToGitee(content string) {
-
+	return imgUrl
 }

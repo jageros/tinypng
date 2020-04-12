@@ -1,14 +1,13 @@
 [tinyPng]
 apiKey = "pJ3FQdt95CnPT0xc5TDkj52m45Kzn8Tt"
 inputDir = "./imgs/"
-outputDir = "./cpimgs/"
-# same to golang time format, default not rename
-renameFormat = "20060102150405"
+#outputDir = "./cpimgs/"   #设置路径后会将压缩后的图片输出到该路径下
+renameFormat = "20060102150405"   # same to golang time format, default not rename
 
 [gitee]
-token = "adf7d13db9231626f5268292bc645c3f"
+token = "adf7d13db9231626f5268292bc645c3f"  # 不设置此项默认不推送到码云
 owner = "jayos"
 repo = "images"
-path = "img/"
+pathFormat = "20060102/"
 branch = "master"
 

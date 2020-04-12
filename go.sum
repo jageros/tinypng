@@ -1,4 +1,2 @@
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/gwpp/tinify-go v0.0.0-20170613055357-77b9df15f343 h1:QbWv77mi5YeTWR3FxLqx5eeC2H0fUL07Kj2Uhza9/A8=
-github.com/gwpp/tinify-go v0.0.0-20170613055357-77b9df15f343/go.mod h1:FP1q8rlReJYgAj3zqyQfD745uokKzl0baffXAcxDcl0=

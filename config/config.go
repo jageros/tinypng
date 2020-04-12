@@ -17,11 +17,11 @@ type tinyPng struct {
 }
 
 type gitee struct {
-	Token  string `toml:"token"`
-	Owner  string `toml:"owner"`
-	Repo   string `toml:"repo"`
-	Path   string `toml:"path"`
-	Branch string `toml:"branch"`
+	Token      string `toml:"token"`
+	Owner      string `toml:"owner"`
+	Repo       string `toml:"repo"`
+	PathFormat string `toml:"pathFormat"`
+	Branch     string `toml:"branch"`
 }
 
 type config struct {
