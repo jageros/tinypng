@@ -55,6 +55,10 @@ func PushToGitee(fileContent, filename string) string {
 	return imgUrl
 }
 
+func createFileToGitee(content, filePath string) {
+
+}
+
 func UpdateFile(filePath, content string) error {
 	cfg := config.GetConfig().Gitee
 	if cfg.Token == "" {
@@ -64,6 +68,11 @@ func UpdateFile(filePath, content string) error {
 	if sha == "" {
 		//log.Printf("Error: get file sha = nil !")
 		return errors.New("get file sha failed")
+	}
+	method := "PUT"
+	if sha == "404" {
+		method = "POST"
+		sha = ""
 	}
 	// https://gitee.com/api/v5/repos/jayos/imgs/contents/index.html
 	url := fmt.Sprintf("%s/%s/%s/contents/%s", baseUrl, cfg.Owner, cfg.Repo, filePath)
@@ -80,7 +89,7 @@ func UpdateFile(filePath, content string) error {
 		return err
 	}
 	bodyReader := strings.NewReader(string(byt))
-	req, err := http.NewRequest("PUT", url, bodyReader)
+	req, err := http.NewRequest(method, url, bodyReader)
 	if err != nil {
 		return err
 	}
@@ -90,7 +99,7 @@ func UpdateFile(filePath, content string) error {
 		return err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode == 201 || resp.StatusCode == 200 {
+	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 		log.Printf("update %s successfuly!", filePath)
 	} else {
 		errMsg := fmt.Sprintf("Update %s faild StatusCode=%d", filePath, resp.StatusCode)
@@ -112,6 +121,12 @@ func getFileSha(filePath string) string {
 		return ""
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode == 404 {
+		return "404"
+	}
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return ""
+	}
 	type shaSt struct {
 		Sha string `json:"sha"`
 	}
