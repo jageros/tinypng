@@ -64,6 +64,7 @@ func compDir(inDir, outDir, outputFilenameFormat string, needDel bool) {
 		}
 	}
 	genhtml.WriteUrlsToFile(imgUrls)
+	gitee.BuildIndexHtmlToGitee()
 }
 
 func compImage(inPath, outPath, inputFilename, outputFilename string, needDel bool) string {

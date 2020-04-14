@@ -57,7 +57,7 @@ func genByTemple(url string) string {
 	return fmt.Sprintf(temple, url, filename, url)
 }
 
-func genAllContent(urls []string) string {
+func GenAllContent(urls []string) string {
 	result := head
 	for i := len(urls) - 1; i >= 0; i-- {
 		result += genByTemple(urls[i])
@@ -66,13 +66,13 @@ func genAllContent(urls []string) string {
 	return result
 }
 
-func writeToHtml(urls []string) {
+func writeToHtml(content string) {
 	f, err := os.Create("index.html")
 	if err != nil {
 		log.Printf("create file err: %v", err)
 	}
 	defer f.Close()
-	_, err = f.WriteString(genAllContent(urls))
+	_, err = f.WriteString(content)
 	if err != nil {
 		log.Printf("write string to html file err: %v", err)
 	}
@@ -112,5 +112,6 @@ func WriteUrlsToFile(urls []string) {
 			lines = append(lines, line)
 		}
 	}
-	writeToHtml(lines)
+	content := GenAllContent(lines)
+	writeToHtml(content)
 }
