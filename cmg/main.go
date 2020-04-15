@@ -84,6 +84,13 @@ func compImage(inPath, outPath, inputFilename, outputFilename string, needDel bo
 	}
 	imgUrl := gitee.PushToGitee(content, outputFilename)
 	if outPath != "" {
+		_, err := os.Stat(outPath)
+		if os.IsNotExist(err) {
+			err = os.MkdirAll(outPath, )
+			if err != nil {
+				log.Printf("create path err: %v", err)
+			}
+		}
 		oPath := fmt.Sprintf("%s%s", outPath, outputFilename)
 		err = source.ToFile(oPath)
 		if err != nil {
