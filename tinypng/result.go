@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
 )
 
 type Result struct {
@@ -21,13 +20,13 @@ func NewResult(meta http.Header, data []byte) *Result {
 	return r
 }
 
-func (r *Result) Data() []byte {
-	return r.data
-}
+//func (r *Result) Data() []byte {
+//	return r.data
+//}
 
-func (r *Result) ToBuffer() []byte {
-	return r.Data()
-}
+//func (r *Result) ToBuffer() []byte {
+//	return r.Data()
+//}
 
 func (r *Result) ToFile(path string) error {
 	path, err := filepath.Abs(path)
@@ -42,24 +41,24 @@ func (r *Result) ToBase64Str() string {
 	return base64.StdEncoding.EncodeToString(r.data)
 }
 
-func (r *Result) Size() int64 {
-	s := r.meta["Content-Length"]
-	if len(s) == 0 {
-		return 0
-	}
+//func (r *Result) Size() int64 {
+//	s := r.meta["Content-Length"]
+//	if len(s) == 0 {
+//		return 0
+//	}
+//
+//	size, _ := strconv.Atoi(s[0])
+//	return int64(size)
+//}
 
-	size, _ := strconv.Atoi(s[0])
-	return int64(size)
-}
+//func (r *Result) MediaType() string {
+//	arr := r.meta["Content-Type"]
+//	if len(arr) == 0 {
+//		return ""
+//	}
+//	return arr[0]
+//}
 
-func (r *Result) MediaType() string {
-	arr := r.meta["Content-Type"]
-	if len(arr) == 0 {
-		return ""
-	}
-	return arr[0]
-}
-
-func (r *Result) ContentType() string {
-	return r.MediaType()
-}
+//func (r *Result) ContentType() string {
+//	return r.MediaType()
+//}

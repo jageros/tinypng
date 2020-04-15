@@ -2,6 +2,7 @@ package genhtml
 
 import (
 	"bufio"
+	"cimage/consts"
 	"fmt"
 	"io"
 	"log"
@@ -9,60 +10,18 @@ import (
 	"strings"
 )
 
-var (
-	head = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>图床图片列表</title>
-</head>
-<body>
-<div>
-`
-
-	end = `
-</div>
-</body>
-</html>
-<style>
-    img {
-        width: 300px;
-        height: 180px;
-    }
-
-    div {
-        float:left;
-        margin: 20px;
-    }
-    p {
-        width: 300px;
-        word-wrap: break-word;
-        word-break: break-all;
-        overflow: hidden;
-    }
-</style>
-`
-
-	temple = `
-	<div>
-        <img src="%s" alt="%s">
-        <p>%s</p>
-	</div>
-`
-)
-
 func genByTemple(url string) string {
 	strs := strings.Split(url, "/")
 	filename := strs[len(strs)-1]
-	return fmt.Sprintf(temple, url, filename, url)
+	return fmt.Sprintf(consts.DivTemple, url, filename, url)
 }
 
 func GenAllContent(urls []string) string {
-	result := head
+	result := consts.HeadHtml
 	for i := len(urls) - 1; i >= 0; i-- {
 		result += genByTemple(urls[i])
 	}
-	result += end
+	result += consts.EndHtml
 	return result
 }
 
@@ -78,7 +37,7 @@ func writeToHtml(content string) {
 	}
 	dir, err := os.Getwd()
 	if err == nil {
-		log.Printf("You can look through at browser: file://%s/index.html", dir)
+		log.Printf("You can look through at browser: file://%s%sindex.html", dir, consts.DirField)
 	}
 }
 

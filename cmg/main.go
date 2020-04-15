@@ -2,6 +2,7 @@ package main
 
 import (
 	"cimage/config"
+	"cimage/consts"
 	"cimage/genhtml"
 	"cimage/gitee"
 	"cimage/tinypng"
@@ -20,7 +21,7 @@ func main() {
 	var inputDir string
 	cfg := config.GetConfig()
 	flag.BoolVar(&needDel, "d", false, "-d: 表示删除源文件")
-	flag.StringVar(&inputDir, "dir", cfg.TinyPng.InPutDir, "-dir ./imgs  表示源图片路径")
+	flag.StringVar(&inputDir, "dir", cfg.TinyPng.InPutDir, "-dir imgs  表示源图片路径")
 	flag.Parse()
 	if needDel {
 		log.Printf("Delete src file end of compress!")
@@ -37,22 +38,22 @@ func compDir(inDir, outDir, outputFilenameFormat string, needDel bool) {
 	if len(files) <= 0 {
 		log.Panicf("Dir %s not has file", inDir)
 	}
-	if !strings.HasSuffix(inDir, "/") {
-		inDir = inDir + "/"
+	if !strings.HasSuffix(inDir, consts.DirField) {
+		inDir = inDir + consts.DirField
 	}
-	if outDir != "" && !strings.HasSuffix(outDir, "/") {
-		outDir = outDir + "/"
+	if outDir != "" && !strings.HasSuffix(outDir, consts.DirField) {
+		outDir = outDir + consts.DirField
 	}
 	var imgUrls []string
 	for i, f := range files {
 		inputFilename := f.Name()
 		var fileType string
 		switch {
-		case strings.HasSuffix(inputFilename, ".jpg"):
+		case strings.HasSuffix(inputFilename, ".jpg"), strings.HasSuffix(inputFilename, ".JPG"):
 			fileType = ".jpg"
-		case strings.HasSuffix(inputFilename, ".jpeg"):
+		case strings.HasSuffix(inputFilename, ".jpeg"), strings.HasSuffix(inputFilename, ".JPEG"):
 			fileType = ".jpeg"
-		case strings.HasSuffix(inputFilename, ".png"):
+		case strings.HasSuffix(inputFilename, ".png"), strings.HasSuffix(inputFilename, ".PNG"):
 			fileType = ".png"
 		default:
 			continue

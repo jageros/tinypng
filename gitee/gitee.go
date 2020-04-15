@@ -55,10 +55,6 @@ func PushToGitee(fileContent, filename string) string {
 	return imgUrl
 }
 
-func createFileToGitee(content, filePath string) {
-
-}
-
 func UpdateFile(filePath, content string) error {
 	cfg := config.GetConfig().Gitee
 	if cfg.Token == "" {
@@ -176,7 +172,8 @@ func GetAllPicUrl() []string {
 	}
 
 	for _, t := range ts.Trees {
-		if strings.HasSuffix(t.PATH, ".jpg") || strings.HasSuffix(t.PATH, ".png") || strings.HasSuffix(t.PATH, ".jpeg") {
+		if strings.HasSuffix(t.PATH, ".jpg") || strings.HasSuffix(t.PATH, ".png") || strings.HasSuffix(t.PATH, ".jpeg") ||
+			strings.HasSuffix(t.PATH, ".JPG") || strings.HasSuffix(t.PATH, ".PNG") || strings.HasSuffix(t.PATH, ".JPEG") {
 			imgUrl := fmt.Sprintf("https://gitee.com/%s/%s/raw/master/%s", cfg.Owner, cfg.Repo, t.PATH)
 			urls = append(urls, imgUrl)
 		}

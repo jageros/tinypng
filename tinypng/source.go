@@ -56,26 +56,26 @@ func FromBuffer(buf []byte) (s *Source, err error) {
 	return
 }
 
-func FromUrl(url string) (s *Source, err error) {
-	if len(url) == 0 {
-		err = errors.New("url is required")
-		return
-	}
-
-	body := map[string]interface{}{
-		"source": map[string]interface{}{
-			"url": url,
-		},
-	}
-
-	response, err := GetClient().Request(http.MethodPost, "/shrink", body)
-	if err != nil {
-		return
-	}
-
-	s, err = getSourceFromResponse(response)
-	return
-}
+//func FromUrl(url string) (s *Source, err error) {
+//	if len(url) == 0 {
+//		err = errors.New("url is required")
+//		return
+//	}
+//
+//	body := map[string]interface{}{
+//		"source": map[string]interface{}{
+//			"url": url,
+//		},
+//	}
+//
+//	response, err := GetClient().Request(http.MethodPost, "/shrink", body)
+//	if err != nil {
+//		return
+//	}
+//
+//	s, err = getSourceFromResponse(response)
+//	return
+//}
 
 func getSourceFromResponse(response *http.Response) (s *Source, err error) {
 	location := response.Header["Location"]
@@ -106,15 +106,15 @@ func (s *Source) ToBase64Str() (string, error) {
 	return result.ToBase64Str(), nil
 }
 
-func (s *Source) Resize(option *ResizeOption) error {
-	if option == nil {
-		return errors.New("option is required")
-	}
-
-	s.commands["resize"] = option
-
-	return nil
-}
+//func (s *Source) Resize(option *ResizeOption) error {
+//	if option == nil {
+//		return errors.New("option is required")
+//	}
+//
+//	s.commands["resize"] = option
+//
+//	return nil
+//}
 
 func (s *Source) toResult() (r *Result, err error) {
 	if len(s.url) == 0 {
