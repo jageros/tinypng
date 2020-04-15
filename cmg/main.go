@@ -86,7 +86,7 @@ func compImage(inPath, outPath, inputFilename, outputFilename string, needDel bo
 	if outPath != "" {
 		_, err := os.Stat(outPath)
 		if os.IsNotExist(err) {
-			err = os.MkdirAll(outPath, )
+			err = os.MkdirAll(outPath, os.ModePerm)
 			if err != nil {
 				log.Printf("create path err: %v", err)
 			}
