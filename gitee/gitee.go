@@ -22,7 +22,7 @@ var (
 func PushToGitee(fileContent, filename string) string {
 	cfg := config.GetConfig().Gitee
 	if cfg.Token == "" {
-		return "push to gitee must set the gitee token!"
+		return ""
 	}
 	path := time.Now().Format(cfg.PathFormat)
 	if cfg.FixedPath != "" {

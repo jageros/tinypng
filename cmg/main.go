@@ -58,14 +58,22 @@ func compDir(inDir, outDir, outputFilenameFormat string, needDel bool) {
 		default:
 			continue
 		}
-		outputFilename := time.Now().Format(outputFilenameFormat) + strconv.Itoa(i) + fileType
+		var outputFilename string
+		if outputFilenameFormat != "" {
+			outputFilename = time.Now().Format(outputFilenameFormat) + strconv.Itoa(i) + fileType
+		} else {
+			outputFilename = inputFilename
+		}
+
 		imUrl := compImage(inDir, outDir, inputFilename, outputFilename, needDel)
 		if imUrl != "" {
 			imgUrls = append(imgUrls, imUrl)
 		}
 	}
-	genhtml.WriteUrlsToFile(imgUrls)
-	gitee.BuildIndexHtmlToGitee()
+	if len(imgUrls) > 0 {
+		genhtml.WriteUrlsToFile(imgUrls)
+		gitee.BuildIndexHtmlToGitee()
+	}
 }
 
 func compImage(inPath, outPath, inputFilename, outputFilename string, needDel bool) string {
@@ -104,6 +112,9 @@ func compImage(inPath, outPath, inputFilename, outputFilename string, needDel bo
 		}
 	}
 	takeTime := time.Now().Sub(start).Seconds()
-	log.Printf("Compress successful: url: %s (takes %fs)", imgUrl, takeTime)
+	log.Printf("Compress successful! (takes %fs)", takeTime)
+	if imgUrl != "" {
+		log.Printf("imgUrl=%s", imgUrl)
+	}
 	return imgUrl
 }

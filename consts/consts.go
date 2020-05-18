@@ -16,14 +16,14 @@ var (
 	ConfigTemplate = `[tinyPng]
 apiKey = "pJ3FQxxxxxxxxxxxxxxxxxxxxxxzn8Tt"   #tinyPNG申请的key
 inputDir = "imgs"     #需要压缩的图片所在的目录
-#outputDir = "cpimgs"   #设置路径后会将压缩后的图片输出到该路径下
-renameFormat = "20060102150405"   # 重命名图片的命名格式， 年月日时分秒的值必须是 6-1-3-4-5 （即：2006年01月02日 15:04:05）
+outputDir = "cpimgs"   #设置路径后会将压缩后的图片输出到该路径下，如不需要存储到本地直接注释掉
+#renameFormat = "20060102150405"   # 重命名图片的命名格式,注释掉此项将不会重命名压缩后的图片， 年月日时分秒的值必须是 6-1-2-3-4-5 （即：2006年01月02日 15:04:05）
 
 [gitee]
-token = "adf7dxxxxxxxxxxxxxxxxxxxxxxxxx5c3f"  # 码云的私人密钥， 不设置此项默认不推送到码云
+#token = "adf7xxxxxxxxxxxxxxxxxxxxxx5c3f"  # 码云的私人密钥， 不设置此项默认不推送到码云
 owner = "Your Name"  # 码云的用户名
 repo = "imgs"  # 仓库名
-pathFormat = "20060102"  # 上传至仓库中文件夹名命名格式， 年月日时分秒的值必须是 6-1-3-4-5 （即：2006年01月02日 15:04:05）
+pathFormat = "20060102"  # 上传至仓库中文件夹名命名格式， 年月日时分秒的值必须是 6-1-2-3-4-5 （即：2006年01月02日 15:04:05）
 #fixedPath = "img" #仓库中固定文件夹，设置此项后 pathFormat项无效
 branch = "master"  # 分支名`
 
