@@ -13,6 +13,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -44,7 +45,9 @@ func compDir(inDir, outDir, outputFilenameFormat string, needDel bool) {
 	if outDir != "" && !strings.HasSuffix(outDir, consts.DirField) {
 		outDir = outDir + consts.DirField
 	}
-	var imgUrls []string
+
+	imgUrlCh := make(chan string, 10)
+	g := &sync.WaitGroup{}
 	for i, f := range files {
 		inputFilename := f.Name()
 		var fileType string
@@ -65,30 +68,43 @@ func compDir(inDir, outDir, outputFilenameFormat string, needDel bool) {
 			outputFilename = inputFilename
 		}
 
-		imUrl := compImage(inDir, outDir, inputFilename, outputFilename, needDel)
-		if imUrl != "" {
-			imgUrls = append(imgUrls, imUrl)
+		g.Add(1)
+		go compImage(inDir, outDir, inputFilename, outputFilename, needDel, imgUrlCh, g)
+	}
+	g2 := &sync.WaitGroup{}
+	g2.Add(1)
+	go func() {
+		defer g2.Done()
+		var imgUrls []string
+		for imgUrl := range imgUrlCh {
+			imgUrls = append(imgUrls, imgUrl)
 		}
-	}
-	if len(imgUrls) > 0 {
-		genhtml.WriteUrlsToFile(imgUrls)
-		gitee.BuildIndexHtmlToGitee()
-	}
+		if len(imgUrls) > 0 {
+			genhtml.WriteUrlsToFile(imgUrls)
+			gitee.BuildIndexHtmlToGitee()
+		}
+	}()
+
+	g.Wait()
+	close(imgUrlCh)
+	g2.Wait()
+	log.Printf("All Compress End!")
 }
 
-func compImage(inPath, outPath, inputFilename, outputFilename string, needDel bool) string {
+func compImage(inPath, outPath, inputFilename, outputFilename string, needDel bool, imgUrlCh chan string, g *sync.WaitGroup) {
+	defer g.Done()
 	start := time.Now()
 	iPath := fmt.Sprintf("%s%s", inPath, inputFilename)
 	log.Printf("Start Compress: %s ...", iPath)
 	source, err := tinypng.FromFile(iPath)
 	if err != nil {
 		log.Print(err)
-		return ""
+		return
 	}
 	content, err := source.ToBase64Str()
 	if err != nil {
 		log.Print(err)
-		return ""
+		return
 	}
 	imgUrl := gitee.PushToGitee(content, outputFilename)
 	if outPath != "" {
@@ -115,6 +131,6 @@ func compImage(inPath, outPath, inputFilename, outputFilename string, needDel bo
 	log.Printf("Compress successful! (takes %fs)", takeTime)
 	if imgUrl != "" {
 		log.Printf("imgUrl=%s", imgUrl)
+		imgUrlCh <- imgUrl
 	}
-	return imgUrl
 }
