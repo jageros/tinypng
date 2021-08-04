@@ -21,8 +21,8 @@ func main() {
 	needDel := false
 	var inputDir string
 	cfg := config.GetConfig()
-	flag.BoolVar(&needDel, "d", false, "-d: 表示删除源文件")
-	flag.StringVar(&inputDir, "dir", cfg.TinyPng.InPutDir, "-dir imgs  表示源图片路径")
+	flag.BoolVar(&needDel, "d", false, "删除源文件")
+	flag.StringVar(&inputDir, "dir", cfg.TinyPng.InPutDir, "源图片路径")
 	flag.Parse()
 	if needDel {
 		log.Printf("Delete src file end of compress!")
@@ -34,10 +34,10 @@ func main() {
 func compDir(inDir, outDir, outputFilenameFormat string, needDel bool) {
 	files, err := ioutil.ReadDir(inDir)
 	if err != nil {
-		log.Panicf("ReadDir error: %v", err)
+		log.Fatalf("ReadDir error: %v", err)
 	}
 	if len(files) <= 0 {
-		log.Panicf("Dir %s not has file", inDir)
+		log.Fatalf("Dir %s not has file", inDir)
 	}
 	if !strings.HasSuffix(inDir, consts.DirField) {
 		inDir = inDir + consts.DirField
